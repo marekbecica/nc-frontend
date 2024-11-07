@@ -10,7 +10,8 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --build --force",
     "lint": "eslint . --fix",
-    "format": "prettier --write src/"
+    "format": "prettier --config prettier.config.js --write src/",
+    "format:check": "prettier --config prettier.config.js --check src/"
   },
   "dependencies": {
     "@firebase/auth": "^1.8.0",
