@@ -3,6 +3,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import { auth } from '../firebaseConfig'
 import Login from '../components/Login.vue'
 import Profile from '../components/Profile.vue'
+import { isTokenValid } from '../utils'
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -26,11 +27,12 @@ const router = createRouter({
 // Navigation guard
 router.beforeEach((to, from, next) => {
   const requiresAuth = to.meta.requiresAuth
-  const currentUser = auth.currentUser
+  const token = localStorage.getItem('userToken')
+  const isAuthenticated = isTokenValid(token)
 
-  if (requiresAuth && !currentUser) {
+  if (requiresAuth && !isAuthenticated) {
     next('/')
-  } else if (!requiresAuth && currentUser && to.name === 'login') {
+  } else if (!requiresAuth && isAuthenticated && to.name === 'login') {
     next('/profile')
   } else {
     next()

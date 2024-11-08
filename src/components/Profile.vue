@@ -55,6 +55,7 @@ import { AxiosError } from 'axios'
 import axios from '../axios'
 import { auth } from '../firebaseConfig'
 import { signOut } from 'firebase/auth'
+import { isTokenValid } from '../utils'
 
 interface UserProfile {
   name: string
@@ -98,9 +99,8 @@ export default defineComponent({
       this.error = ''
 
       try {
-        const token = await auth.currentUser?.getIdToken()
-        console.log(token)
-        if (!token) {
+        const token = localStorage.getItem('userToken')
+        if (!token || !isTokenValid(token)) {
           this.$router.push('/')
           return
         }
@@ -128,8 +128,8 @@ export default defineComponent({
       this.successMessage = ''
 
       try {
-        const token = await auth.currentUser?.getIdToken()
-        if (!token) throw new Error('Not authenticated')
+        const token = localStorage.getItem('userToken')
+        if (!token || !isTokenValid(token)) { throw new Error('Not authenticated') }
 
         await axios.put<UserProfile>(
           '/api/profile',
